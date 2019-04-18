@@ -1,0 +1,17 @@
+{
+  "name": "joomlatools/sos-circolari",
+  "type": "joomlatools-composer",
+  "description": "SOS Circolari",
+  "keywords": ["joomla", "sos", "circolari", "scuolaonlineservice"],
+  "homepage": "https://github.com/Scuola-Online-Service/sos-circolari",
+  "authors": [
+    {
+      "name": "Soluzioni Futura",
+      "email": "info@soluzionifutura.it",
+      "homepage": "https://www.soluzionifutura.it"
+    }
+  ],
+  "require": {
+    "joomlatools/composer": "*"
+  }
+}

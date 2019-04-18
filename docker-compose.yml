@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  joomla:
+    image: scuolaonlineservice/sample-scuola
+    container_name: sos-circolari-joomla
+    restart: always
+    ports:
+      - 80:80
+    tty: true
+    volumes:
+      - ./logs:/var/log/nginx
+      - ./src:/home/components/sos-circolari
+    depends_on:
+      - db
+    environment:
+      SITE_NAME: ${SITE_NAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DB_NAME: ${MYSQL_DB_NAME}
+      MYSQL_DB_HOST: ${MYSQL_DB_HOST}
+    links:
+      - db:${MYSQL_DB_HOST}
+
+  db:
+    image: mysql:5.7
+    container_name: sos-circolari-db
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    tty: true

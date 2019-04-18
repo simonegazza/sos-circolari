@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "sos-circolari",
+  "description": "Soluzione di sviluppo di SOS per il componente sos-circolari",
+  "scripts": {
+    "stop": "docker-compose down -v --remove-orphans",
+    "start": "npm stop && docker-compose up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scuolaonlineservice/sos-circolari.git"
+  },
+  "author": {
+    "name": "Soluzioni Futura",
+    "email": "info@soluzionifutura.it"
+  },
+  "bugs": {
+    "url": "https://github.com/scuolaonlineservice/sos-circolari/issues"
+  },
+  "homepage": "https://github.com/scuolaonlineservice/sos-circolari#readme"
+}

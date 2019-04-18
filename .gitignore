@@ -1,0 +1,15 @@
+.DS_Store
+
+/vendor/
+.env
+composer
+composer.phar
+
+# Custom
+.idea
+
+# Env logs
+logs
+
+# Env variables
+.env
