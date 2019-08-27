@@ -1,19 +1,3 @@
-CREATE TABLE IF NOT EXISTS sos_gruppi (
-	id INT NOT NULL,
-	email VARCHAR(255) NOT NULL,
-
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS sos_utenti (
-	id INT NOT NULL,
-	email VARCHAR(255) NOT NULL,
-	gruppo INT NOT NULL,
-
-	FOREIGN KEY (gruppo) REFERENCES sos_gruppi (id),
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
 CREATE TABLE IF NOT EXISTS sos_azioni_utente (
 	id INT NOT NULL,
 	azione VARCHAR(255) NOT NULL,
@@ -22,20 +6,20 @@ CREATE TABLE IF NOT EXISTS sos_azioni_utente (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sos_circolari (
-	numero INT UNIQUE NOT NULL,
+	numero INT UNIQUE NOT NULL AUTO_INCREMENT,
 	oggetto TEXT NOT NULL,
 	testo TEXT NOT NULL,
 	autore INT NOT NULL,
 	bozza TINYINT NOT NULL,
-	data_pubblicazione DATE NOT NULL,
+	data_pubblicazione DATE,
 --	data_fine_interazione DATE NOT NULL,
 	anno_scolastico VARCHAR(10) NOT NULL,
 	sos_azioni_utente INT NOT NULL,
-	protocollo VARCHAR(255) NOT NULL,
+	protocollo VARCHAR(255),
 	privata TINYINT NOT NULL,
 	luogo VARCHAR(255) NOT NULL,
 
-	FOREIGN KEY (autore) REFERENCES sos_utenti (id),
+	FOREIGN KEY (autore) REFERENCES j_users (id), -- TODO: sostituire con nome scuola al posto di j_table
 	FOREIGN KEY (sos_azioni_utente) REFERENCES sos_azioni_utente (id),
 	PRIMARY KEY (numero)
 ) ENGINE=InnoDB;
@@ -45,16 +29,16 @@ CREATE TABLE IF NOT EXISTS sos_utenti_destinatari (
 	id_circolare INT NOT NULL,
 
 	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
-	FOREIGN KEY (id_utente) REFERENCES sos_utenti(id),
+	FOREIGN KEY (id_utente) REFERENCES j_users(id), -- TODO: sostituire con nome scuola al posto di j_table
 	PRIMARY KEY (id_utente, id_circolare)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sos_gruppi_destinatari (
-	id_gruppo INT NOT NULL,
+	id_gruppo INT(10) UNSIGNED NOT NULL,
 	id_circolare INT NOT NULL,
 
 	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
-	FOREIGN KEY (id_gruppo) REFERENCES sos_gruppi(id),
+	FOREIGN KEY (id_gruppo) REFERENCES j_usergroups(id), -- TODO: sostituire con nome scuola al posto di j_table
 	PRIMARY KEY (id_gruppo, id_circolare)
 ) ENGINE=InnoDB;
 
@@ -84,7 +68,7 @@ CREATE TABLE IF NOT EXISTS sos_risposte (
 
 	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
 	FOREIGN KEY (id_azione_utente) REFERENCES sos_azioni_utente(id),
-	FOREIGN KEY (id_utente) REFERENCES sos_utenti(id),
+	FOREIGN KEY (id_utente) REFERENCES j_users(id), -- TODO: sostituire con nome scuola al posto di j_table
 
 	PRIMARY KEY (id, id_circolare)
 ) ENGINE=InnoDB;
