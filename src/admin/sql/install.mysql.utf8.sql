@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS sos_circolari (
 	testo TEXT NOT NULL,
 	autore INT NOT NULL,
 	bozza TINYINT NOT NULL,
-	data_pubblicazione DATE NOT NULL,
+	data_pubblicazione DATE,
 --	data_fine_interazione DATE NOT NULL,
 	anno_scolastico VARCHAR(10) NOT NULL,
 	sos_azioni_utente INT NOT NULL,
