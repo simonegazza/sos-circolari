@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
     <name>sos_circolari</name>
-    <creationDate>May 2019</creationDate>
+    <creationDate>Agosto 2019</creationDate>
     <author>Soluzioni Futura</author>
     <authorEmail>info@soluzionifutura.it</authorEmail>
     <authorUrl>https://soluzionifutura.it</authorUrl>
@@ -31,11 +31,12 @@
         <folder>images</folder>
     </media>
 
-    <update>
+<!--    <update>
         <schemas>
             <schemapath type="mysql">sql/updates/mysql/</schemapath>
         </schemas>
     </update>
+-->
 
     <files folder="site">
         <filename>controller.php</filename>
