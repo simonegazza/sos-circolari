@@ -8,16 +8,17 @@ class Circolare {
     public $record_number;
     public $location; // = "Reggio nell'Emilia"; //controllare che si possa fare in php
     public $user_actions;
+    public $userId;
 
-//    public function getAnnoScolastico() {
-//        $now = date("Y-m-d");
-//        if data.giorno <31 && data.mese < 08 {
-//            return "data.anno-1/data.anno"
-//        } else {
-//            return "data.anno/data.anno+1"
-//        }
-//        //ternario ^ (?)
-//    }
+    public function getAnnoScolastico() {
+        $month = idate("m");
+        $day = idate("d");
+        if ($day < 31 && $month < 8) {
+            return "" . (idate("Y") -1) . "/" . idate("Y");
+        } else {
+            return "" . idate("Y") . "/" . (idate("Y") + 1 );
+        }
+    }
 
     public function __construct(array $config) {
         $this->title = $config["oggetto"];
@@ -27,17 +28,16 @@ class Circolare {
         $this->is_private = $config["privata"];
         $this->record_number = $config["protocollo"];
         $this->location = $config["luogo"];
-       $this->user_actions = $config["sos_azioni_utente"];
+        $this->user_actions = $config["sos_azioni_utente"];
+        $user = &JFactory::getUser();
+        $this->userId = (int)$user->id;
     }
 
     public function createCircolare() {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
 
-        $user = &JFactory::getUser();
-        $userId = $user->get('id');
-
-        $columns = array(
+        $columns = [
             'oggetto',
             'testo',
             'autore',
@@ -48,40 +48,38 @@ class Circolare {
             'protocollo',
             'privata',
             'luogo'
-          );
+        ];
 
-        $values = array(
+        $values = [
             $db->quote($this->title),
             $db->quote($this->body),
-            1,//$userId,
-            $this->is_published,                                            //TODO delete not null in SQL
-            $this->is_published ? date("Y-m-d") : NULL,
-            $db->quote($this->ay), //$this->getAnnoScolastico(),                     //TODO get it from eslewhere
+            $this->userId,
+            $this->is_published,
+            $this->is_published ? $db->quote(date("Y-m-d")) : $db->quote(date("Y-m-d", 0)),
+            $db->quote($this->getAnnoScolastico()),
             $this->user_actions,
             $db->quote($this->record_number),
             $this->is_private,
             $db->quote($this->location)
-          );
+        ];
 
-
-        //TODO: insert into MYSQL
         $query
             ->insert($db->quoteName('sos_circolari'))
             ->columns($db->quoteName($columns))
             ->values(implode(',', $values));
 
-        $db->setQuery($query);
-        $db->execute();
+      $db->setQuery($query);
+      $db->execute();
     }
 }
 $circolare = [
     "oggetto" => "test",
     "testo" => "testtestprova",
-    "bozza" => 1,
+    "bozza" => false,
     "anno_scolastico" => "2018/2019",
     "sos_azioni_utente" => 1,
-    "privata" => 0,
-    "protocollo" => "11111",
+    "privata" => true,
+    "protocollo" => "4499/C",
     "luogo" => "Reggio Emilia"
 ];
 
