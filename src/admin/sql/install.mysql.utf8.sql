@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS sos_azioni_utente (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sos_circolari (
-	numero INT UNIQUE NOT NULL AUTO_INCREMENT,
+	id INT NOT NULL AUTO_INCREMENT,
+	numero INT UNIQUE,
 	oggetto TEXT NOT NULL,
 	testo TEXT NOT NULL,
 	autore INT NOT NULL,
@@ -21,14 +22,14 @@ CREATE TABLE IF NOT EXISTS sos_circolari (
 
 	FOREIGN KEY (autore) REFERENCES j_users (id), -- TODO: sostituire con nome scuola al posto di j_table
 	FOREIGN KEY (sos_azioni_utente) REFERENCES sos_azioni_utente (id),
-	PRIMARY KEY (numero)
+	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sos_utenti_destinatari (
 	id_utente INT NOT NULL,
 	id_circolare INT NOT NULL,
 
-	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
+	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(id),
 	FOREIGN KEY (id_utente) REFERENCES j_users(id), -- TODO: sostituire con nome scuola al posto di j_table
 	PRIMARY KEY (id_utente, id_circolare)
 ) ENGINE=InnoDB;
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS sos_gruppi_destinatari (
 	id_gruppo INT(10) UNSIGNED NOT NULL,
 	id_circolare INT NOT NULL,
 
-	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
+	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(id),
 	FOREIGN KEY (id_gruppo) REFERENCES j_usergroups(id), -- TODO: sostituire con nome scuola al posto di j_table
 	PRIMARY KEY (id_gruppo, id_circolare)
 ) ENGINE=InnoDB;
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS sos_circolari_allegati (
 	id_allegato INT NOT NULL,
 	id_circolare INT NOT NULL,
 
-	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
+	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(id),
 	FOREIGN KEY (id_allegato) REFERENCES sos_allegati(id),
 	PRIMARY KEY (id_allegato, id_circolare)
 ) ENGINE=InnoDB;
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS sos_risposte (
 	id_azione_utente INT NOT NULL,
 	data_risposta DATE NOT NULL,
 
-	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(numero),
+	FOREIGN KEY (id_circolare) REFERENCES sos_circolari(id),
 	FOREIGN KEY (id_azione_utente) REFERENCES sos_azioni_utente(id),
 	FOREIGN KEY (id_utente) REFERENCES j_users(id), -- TODO: sostituire con nome scuola al posto di j_table
 
