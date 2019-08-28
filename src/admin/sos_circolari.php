@@ -6,9 +6,10 @@ class Circolare {
     public $is_private;
     public $ay;
     public $record_number;
-    public $location; // = "Reggio nell'Emilia"; //controllare che si possa fare in php
+    public $location; 
     public $user_actions;
     public $userId;
+    public $publication_date;
 
     public function getAnnoScolastico() {
         $month = idate("m");
@@ -31,6 +32,7 @@ class Circolare {
         $this->user_actions = $config["sos_azioni_utente"];
         $user = &JFactory::getUser();
         $this->userId = (int)$user->id;
+        $this->publication_date = (int)$config["data_pubblicazione"];
     }
 
     public function createCircolare() {
@@ -55,7 +57,7 @@ class Circolare {
             $db->quote($this->body),
             $this->userId,
             $this->is_published,
-            $this->is_published ? $db->quote(date("Y-m-d")) : $db->quote(date("Y-m-d", 0)),
+            $this->publication_date,
             $db->quote($this->getAnnoScolastico()),
             $this->user_actions,
             $db->quote($this->record_number),
@@ -75,10 +77,11 @@ class Circolare {
 $circolare = [
     "oggetto" => "test",
     "testo" => "testtestprova",
-    "bozza" => false,
+    "bozza" => 0,
+    "data_pubblicazione" => $bozza ? str_replace("-","",date("Y-m-d")) : NULL,
     "anno_scolastico" => "2018/2019",
     "sos_azioni_utente" => 1,
-    "privata" => true,
+    "privata" => 1,
     "protocollo" => "4499/C",
     "luogo" => "Reggio Emilia"
 ];
