@@ -73,7 +73,26 @@ class Circolare {
       $db->setQuery($query);
       $db->execute();
     }
+
+    public function deleteCircolare() {
+      $db = JFactory::getDbo();
+
+      $query = $db->getQuery(true);
+
+      $conditions = array(
+        $db->quoteName('numero') . ' = 2', 
+      );
+
+      $query->delete($db->quoteName('sos_circolari'));
+      $query->where($conditions);
+
+      $db->setQuery($query);
+
+      $result = $db->execute();
+    }
 }
+
+
 $circolare = [
     "oggetto" => "test",
     "testo" => "testtestprova",
@@ -88,3 +107,4 @@ $circolare = [
 
 $prova = new Circolare($circolare);
 $prova->createCircolare();
+$prova->deleteCircolare();
