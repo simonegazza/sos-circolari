@@ -11,6 +11,8 @@ class Circolare {
     public $userId;
     public $publication_date;
 
+    public $number;
+
     public function getAnnoScolastico() {
         $month = idate("m");
         $day = idate("d");
@@ -33,6 +35,7 @@ class Circolare {
         $user = &JFactory::getUser();
         $this->userId = (int)$user->id;
         $this->publication_date = (int)$config["data_pubblicazione"];
+        $this->number = $config["numero"];
     }
 
     public function createCircolare() {
@@ -80,7 +83,7 @@ class Circolare {
       $query = $db->getQuery(true);
 
       $conditions = array(
-        $db->quoteName('numero') . ' = 2', 
+        $db->quoteName('numero') . ' = ' . $this->number//$db->quote($this->number), 
       );
 
       $query->delete($db->quoteName('sos_circolari'));
@@ -102,7 +105,8 @@ $circolare = [
     "sos_azioni_utente" => 1,
     "privata" => 1,
     "protocollo" => "4499/C",
-    "luogo" => "Reggio Emilia"
+    "luogo" => "Reggio Emilia",
+    "numero" => 3
 ];
 
 $prova = new Circolare($circolare);
