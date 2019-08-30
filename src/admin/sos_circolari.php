@@ -1,14 +1,13 @@
 <?php
 function getAnnoScolastico() {
         $month = idate("m");
-        $day = idate("d");
-        if ($day < 31 && $month < 8) {
+        $dacademic_year = idate("d");
+        if ($dacademic_year < 31 && $month < 8) {
             return "" . (idate("Y") -1) . "/" . idate("Y");
         } else {
             return "" . idate("Y") . "/" . (idate("Y") + 1 );
     }
 }
-
 
 function getNumber() {
     $db = JFactory::getDbo();
@@ -23,7 +22,7 @@ function getNumber() {
         ->execute();
 
     $result = $db->loadObjectList();
-    return empty(\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) ? 1 : ((int)\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) + 1;
+    return empty(\Joomla\Utilities\Arracademic_yearHelper::fromObject($result[0])["numero"]) ? 1 : ((int)\Joomla\Utilities\Arracademic_yearHelper::fromObject($result[0])["numero"]) + 1;
 }
 
 class Circolare {
@@ -33,34 +32,18 @@ class Circolare {
     public $body;
     public $draft;
     public $is_private;
-    public $ay;
+    public $academic_year;
     public $record_number;
     public $location;
     public $user_actions;
     public $userId;
     public $publication_date;
 
-/*public function getId() {
-    $db = JFactory::getDbo();
-    $query = $db->getQuery(true);
-    $query
-        ->select("id")
-        ->from("sos_circolari")
-        ->order("id desc")
-        ->setLimit("1");
-    $db->setQuery($query)
-        ->execute();
-
-    $result = $db->loadObjectList();
-    return (int)$result["id"];
-}*/
-
-    public function __construct(array $config) {
-        //$this->id = $this->getId() + 1;
+    public function __construct(arracademic_year $config) {
         $this->title = $config["oggetto"];
         $this->body = $config["testo"];
         $this->draft = $config["bozza"];
-        $this->ay = $config["anno_scolastico"];
+        $this->academic_year = $config["anno_scolastico"];
         $this->is_private = $config["privata"];
         $this->record_number = $config["protocollo"];
         $this->location = $config["luogo"];
@@ -68,18 +51,15 @@ class Circolare {
 
         $user = &JFactory::getUser();
         $this->userId = (int)$user->id;
-
+        
         $this->number = $config["numero"] ?
-            $config["numero"] :
             $config["bozza"] ?
-                "NULL" :
-                getNumber();
-
-        $this->publication_date = $config[data_pubblicazione] ?
-            $config[data_pubblicazione] :
+                "NULL" : getNumber() : "NULL"; //: "NULL";
+        
+        $this->publication_date = $config["data_pubblicazione"] ?
             $config["bozza"] ?
-                "NULL" :
-                str_replace("-","",date("Y-m-d"));
+                "NULL" : str_replace("-","",date("Y-m-d")) : "NULL"; //: "NULL";
+         
     }
 
     public function createCircolare() {
@@ -107,7 +87,7 @@ class Circolare {
             $this->userId,
             $this->draft,
             $this->publication_date,
-            $db->quote($this->ay),
+            $db->quote($this->academic_year),
             $this->user_actions,
             $db->quote($this->record_number),
             $this->is_private,
@@ -192,9 +172,22 @@ function readSingle() {
     return $result;
 }
 
+$circolare = [
+      "numero" => $bozza ? getNumber() : "NULL",
+	    "oggetto" => "test",
+	    "testo" => "testtestprova",
+	    "bozza" => 0,
+	    "data_pubblicazione" => (int)$bozza ? str_replace("-","",date("Y-m-d")) : "NULL",
+	    "anno_scolastico" => "2018/2019",
+	    "sos_azioni_utente" => 1,
+	    "privata" => 1,
+	    "protocollo" => "4499/C",
+	    "luogo" => "Reggio Emilia",
+];
+
 //readForWidget();
 //readMultiple();
 //readSingle();
-//$prova = new Circolare($circolare);
-//$prova->createCircolare();
+$prova = new Circolare($circolare);
+$prova->createCircolare();
 //$prova->deleteCircolare();
