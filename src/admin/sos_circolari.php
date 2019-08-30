@@ -25,6 +25,38 @@ function getNumber() {
     return empty(\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) ? 1 : ((int)\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) + 1;
 }
 
+function getLatestArticleId() {
+    $db = JFactory::getDbo();
+    $query = $db->getQuery(true);
+    $query
+        ->select("id")
+        ->from("j_content")
+        ->where("id is not null")
+        ->order("id desc")
+        ->setLimit("1");
+    $db->setQuery($query)
+        ->execute();
+
+    $result = $db->loadObjectList();
+    return empty(\Joomla\Utilities\ArrayHelper::fromObject($result[0])["id"]) ? 1 : ((int)\Joomla\Utilities\ArrayHelper::fromObject($result[0])["id"]) + 1;
+}
+
+function getAssetId(string $assetTitle) {
+    $db = JFactory::getDbo();
+    $query = $db->getQuery(true);
+    $query
+        ->select("id")
+        ->from("j_assets")
+        ->where("id is not null")   //->where($db->quoteName("title") .  " = " . $db->quote($assetTitle))
+        ->order("id desc")
+        ->setLimit("1");
+    $db->setQuery($query)
+        ->execute();
+
+    $result = $db->loadObjectList();
+    return empty(\Joomla\Utilities\ArrayHelper::fromObject($result[0])["id"]) ? 1 : ((int)\Joomla\Utilities\ArrayHelper::fromObject($result[0])["id"]) + 1;
+}
+
 class Circolare {
     public $id;
     public $number;
@@ -50,6 +82,21 @@ class Circolare {
 
     public $lcu_id_user;
     public $lcu_id_circolare;
+
+    public $parent_id;
+    public $level;
+    public $asset_name;
+    public $rules;
+
+    public $asset_id;
+    public $article_alias;
+    public $html_body;
+    public $state;
+    public $catid;
+    public $article_date;
+    public $access;
+    public $featured;
+
 
     public function __construct(array $config) {
         $this->title = $config["oggetto"];
@@ -82,7 +129,20 @@ class Circolare {
         $this->publication_date = $config["data_pubblicazione"] ?
             $config["bozza"] ?
                 "NULL" : str_replace("-","",date("Y-m-d")) : "NULL";
-         
+        
+        $this->parent_id = 27;
+        $this->level = 3;
+        $this->asset_name = $config["asset_name"]; 
+        $this->rules = "{}";
+
+        $this->asset_id = ((int)getAssetId($config["oggetto"]));
+        $this->article_alias = "circolare-" . ((string)getNumber());
+        $this->html_body = "<p>" . $this->body . "</p>";
+        $this->state = 1;
+        $this->catid = $config["catid"];
+        $this->article_date = ((string)date("Y-m-d H:i:s"));
+        $this->access = 1;
+        $this->featured = 0;
     }
 
     public function createCircolare() {
@@ -225,6 +285,74 @@ class Circolare {
       $db->setQuery($query)
          ->execute();
     }
+
+    public function createArticleAsset() {     
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+          "parent_id",  //27
+          "level",      //3
+          "name",       //com_content.article.X
+          "title",
+          "rules"       //{}
+        ];
+
+        $values = [
+          $this->parent_id,
+          $this->level,
+          $db->quote($this->asset_name),
+          $db->quote($this->title),
+          $db->quote($this->rules)
+        ];
+
+        $query->insert($db->quoteName("j_assets"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
+
+    public function createArticleContent() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+          "asset_id",   // get asset id
+          "title",      // oggetto
+          "alias",      // circolare-numero
+          "introtext",  // create article body
+          "state",      // 1
+          "catid",      // cat id, default 2 (uncategorised)
+          "created",    // current date
+          "created_by", // autore circolare
+          "publish_up", // current date
+          "access",     // 1
+          "featured"
+        ];
+
+        $values = [
+          $this->asset_id,
+          $db->quote($this->title),
+          $db->quote($this->article_alias),
+          $db->quote($this->html_body),
+          $this->state,
+          $this->catid,
+          $db->quote($this->article_date),
+          $this->userId,
+          $db->quote($this->article_date),
+          $this->access,
+          $this->featured
+        ];
+        
+        $query->insert($db->quoteName("j_content"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
 }
 
 function readForWidget() {
@@ -299,7 +427,9 @@ $circolare = [
           "id_allegato" => 1,
           "id_circolare" => 1,
           "id_gruppo" => 1,
-            "id_utente" => 951
+            "id_utente" => 951,
+      "asset_name" => "com_content.article." . ((string)getLatestArticleId()),
+      "catid" => 2
 ];
 
 //readForWidget();
@@ -307,8 +437,11 @@ $circolare = [
 //readSingle();
 $prova = new Circolare($circolare);
 $prova->createCircolare();
-$prova->createAllegato();
-$prova->linkCircolareAllegato();
-$prova->linkCircolareUsergroup();
-$prova->linkCircolareUser();
+//$prova->createAllegato();
+//$prova->linkCircolareAllegato();
+//$prova->linkCircolareUsergroup();
+//$prova->linkCircolareUser();
 //$prova->deleteCircolare();
+
+$prova->createArticleAsset();
+$prova->createArticleContent();
