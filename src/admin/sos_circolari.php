@@ -22,7 +22,7 @@ function getNumber() {
         ->execute();
 
     $result = $db->loadObjectList();
-    return empty(\Joomla\Utilities\Arracademic_yearHelper::fromObject($result[0])["numero"]) ? 1 : ((int)\Joomla\Utilities\Arracademic_yearHelper::fromObject($result[0])["numero"]) + 1;
+    return empty(\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) ? 1 : ((int)\Joomla\Utilities\ArrayHelper::fromObject($result[0])["numero"]) + 1;
 }
 
 class Circolare {
@@ -39,26 +39,49 @@ class Circolare {
     public $userId;
     public $publication_date;
 
-    public function __construct(arracademic_year $config) {
+    public $attachment_name;
+    public $attachment_url;
+
+    public $lca_id_attachment;
+    public $lca_id_circolare;
+
+    public $lcug_id_usergroup;
+    public $lcug_id_circolare;
+
+    public $lcu_id_user;
+    public $lcu_id_circolare;
+
+    public function __construct(array $config) {
         $this->title = $config["oggetto"];
         $this->body = $config["testo"];
         $this->draft = $config["bozza"];
-        $this->academic_year = $config["anno_scolastico"];
+        $this->academic_year= $config["anno_scolastico"];
         $this->is_private = $config["privata"];
         $this->record_number = $config["protocollo"];
         $this->location = $config["luogo"];
         $this->user_actions = $config["sos_azioni_utente"];
+        
+        $this->attachment_name = $config["nome_allegato"];
+        $this->attachment_url = $config["url_allegato"];
+        $this->lca_id_attachment = $config["id_allegato"];
+        $this->lca_id_circolare = $config["id_circolare"];
+
+        $this->lcug_id_usergroup = $config["id_gruppo"];
+        $this->lcug_id_circolare = $config["id_circolare"];
+
+        $this->lcu_id_user = $config["id_utente"];
+        $this->lcu_id_circolare = $config["id_circolare"];
 
         $user = &JFactory::getUser();
         $this->userId = (int)$user->id;
         
         $this->number = $config["numero"] ?
             $config["bozza"] ?
-                "NULL" : getNumber() : "NULL"; //: "NULL";
+                "NULL" : getNumber() : "NULL";
         
         $this->publication_date = $config["data_pubblicazione"] ?
             $config["bozza"] ?
-                "NULL" : str_replace("-","",date("Y-m-d")) : "NULL"; //: "NULL";
+                "NULL" : str_replace("-","",date("Y-m-d")) : "NULL";
          
     }
 
@@ -95,6 +118,94 @@ class Circolare {
         ];
 
         $query->insert($db->quoteName("sos_circolari"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
+
+    public function createAllegato() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+            "nome",
+            "url"
+        ];
+
+        $values = [
+            $db->quote($this->attachment_name),
+            $db->quote($this->attachment_url)
+        ];
+
+        $query->insert($db->quoteName("sos_allegati"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
+
+    public function linkCircolareAllegato() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+            "id_allegato",
+            "id_circolare"
+        ];
+
+        $values = [
+            $this->lca_id_attachment,
+            $this->lca_id_circolare
+        ];
+
+        $query->insert($db->quoteName("sos_circolari_allegati"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
+
+    public function linkCircolareUsergroup() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+            "id_gruppo",
+            "id_circolare"
+        ];
+
+        $values = [
+            $this->lcug_id_usergroup,
+            $this->lcug_id_circolare
+        ];
+
+        $query->insert($db->quoteName("sos_gruppi_destinatari"))
+            ->columns($db->quoteName($columns))
+            ->values(implode(",", $values));
+
+        $db->setQuery($query)
+            ->execute();
+    }
+
+    public function linkCircolareUser() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $columns = [
+            "id_utente",
+            "id_circolare"
+        ];
+
+        $values = [
+            $this->lcu_id_user,
+            $this->lcu_id_circolare
+        ];
+
+        $query->insert($db->quoteName("sos_utenti_destinatari"))
             ->columns($db->quoteName($columns))
             ->values(implode(",", $values));
 
@@ -182,7 +293,13 @@ $circolare = [
 	    "sos_azioni_utente" => 1,
 	    "privata" => 1,
 	    "protocollo" => "4499/C",
-	    "luogo" => "Reggio Emilia",
+      "luogo" => "Reggio Emilia",
+        "nome_allegato" => "",
+        "url_allegato" => "",
+          "id_allegato" => 1,
+          "id_circolare" => 1,
+          "id_gruppo" => 1,
+            "id_utente" => 951
 ];
 
 //readForWidget();
@@ -190,4 +307,8 @@ $circolare = [
 //readSingle();
 $prova = new Circolare($circolare);
 $prova->createCircolare();
+$prova->createAllegato();
+$prova->linkCircolareAllegato();
+$prova->linkCircolareUsergroup();
+$prova->linkCircolareUser();
 //$prova->deleteCircolare();
