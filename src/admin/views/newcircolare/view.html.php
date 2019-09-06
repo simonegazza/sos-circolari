@@ -1,13 +1,15 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-class SosCircolariViewCircolari extends JViewLegacy
+/*
+ * Joomla non consente di chiamare le view utilizzando nomi scritti in
+ * "camel case", pertanto il nome di questa view è tutto minuscolo
+ */
+
+class SosCircolariViewNewCircolare extends JViewLegacy
 {
     function display($tpl = null)
     {
-        $this->items		= $this->get('Items');
-        $this->pagination	= $this->get('Pagination');
-
         if (count($errors = $this->get('Errors')))
         {
             JError::raiseError(500, implode('<br />', $errors));
@@ -23,6 +25,5 @@ class SosCircolariViewCircolari extends JViewLegacy
     protected function addToolBar()
     {
         JToolBarHelper::title(JText::_('SOS Circolari'));
-        JToolBarHelper::addNew('circolare.add');
     }
 }

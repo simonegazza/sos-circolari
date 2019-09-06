@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.2" method="upgrade">
-    <name>SOS Circolari</name>
+<extension type="component" version="3.2.0" method="upgrade">
+
+    <name>sos_circolari</name>
     <creationDate>Settembre 2019</creationDate>
     <author>Soluzioni Futura</author>
     <authorEmail>info@soluzionifutura.it</authorEmail>
@@ -21,8 +22,9 @@
             <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
         </sql>
     </uninstall>
-
-    <scriptfile>script.php</scriptfile>
+    <files folder="site">
+        <filename>index.html</filename>
+    </files>
 
     <media destination="com_sos_circolari" folder="media">
         <filename>index.html</filename>
@@ -36,15 +38,16 @@
     </files>
 
     <administration>
-        <menu link="index.php?option=com_sos_circolari">SOS Circolari</menu>
+        <menu link='index.php?option=com_sos_circolari'>SOS Circolari</menu>
         <files folder="admin">
+            <filename>index.html</filename>
             <filename>sos_circolari.php</filename>
             <filename>controller.php</filename>
-            <filename>index.html</filename>
-            <folder>models</folder>
-            <folder>views</folder>
             <folder>sql</folder>
             <folder>tables</folder>
+            <folder>models</folder>
+            <folder>views</folder>
         </files>
     </administration>
+
 </extension>
