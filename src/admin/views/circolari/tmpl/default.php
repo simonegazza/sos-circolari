@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted Access');
                         <?php echo JHtml::_('grid.id', $i, $row->id); ?>
                     </td>
                     <td>
-                        <a href="<?php echo JRoute::_('index.php?option=com_sos_circolari&task=helloworld.edit&id=' . $row->id); ?>">
+                        <a href="<?php echo JRoute::_('index.php?option=com_sos_circolari&view=circolare&id=' . $row->id); ?>">
                             <?php echo $row->oggetto; ?>
                         </a>
                     </td>
@@ -39,3 +39,4 @@ defined('_JEXEC') or die('Restricted Access');
     <input type="hidden" name="boxchecked" value="0"/>
     <?php echo JHtml::_('form.token'); ?>
 </form>
+

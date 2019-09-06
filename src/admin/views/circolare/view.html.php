@@ -1,12 +1,14 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-class SosCircolariViewCircolari extends JViewLegacy
+class SosCircolariViewCircolare extends JViewLegacy
 {
     function display($tpl = null)
     {
-        $this->items		= $this->get('Items');
-        $this->pagination	= $this->get('Pagination');
+        $id = JFactory::getApplication()->input->get->get('id', 0);
+        $circolare = $this->getModel()->getCircolare($id);
+
+        $this->assignRef ("circolare", $circolare);
 
         if (count($errors = $this->get('Errors')))
         {
@@ -23,6 +25,5 @@ class SosCircolariViewCircolari extends JViewLegacy
     protected function addToolBar()
     {
         JToolBarHelper::title(JText::_('SOS Circolari'));
-        JToolBarHelper::addNew('circolare.add');
     }
 }
