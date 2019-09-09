@@ -45,6 +45,7 @@
             <filename>index.html</filename>
             <filename>sos_circolari.php</filename>
             <folder>sql</folder>
+            <folder>controllers</folder>
             <folder>tables</folder>
             <folder>controllers</folder>
             <folder>models</folder>

@@ -25,5 +25,7 @@ class SosCircolariViewCircolari extends JViewLegacy
     {
         JToolBarHelper::title(JText::_('SOS Circolari'));
         JToolBarHelper::addNew('circolari.add');
+        JToolBarHelper::title(JText::_("SOS Circolari"));
+        JToolBarHelper::addNew("newcircolare.add");
     }
 }

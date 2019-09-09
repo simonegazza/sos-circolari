@@ -6,7 +6,7 @@
  * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-jimport('joomla.application.component.controller');
+
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 /**
@@ -16,10 +16,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  com_helloworld
  * @since       0.0.7
  */
-
-JHtml::_ ( 'behavior.tooltip' );
-
-class SosCircolariController extends JControllerLegacy
+class SosCircolariControllerCircolare extends JControllerLegacy
 {
     /**
      * The default view for the display method.
@@ -27,5 +24,5 @@ class SosCircolariController extends JControllerLegacy
      * @var string
      * @since 12.2
      */
-    protected $default_view = 'circolari';
+    protected $default_view = 'circolare';
 }
