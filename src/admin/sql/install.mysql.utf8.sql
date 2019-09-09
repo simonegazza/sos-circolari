@@ -12,10 +12,10 @@ INSERT INTO sos_azioni_utente
 VALUES (2, "Presa visione");
 
 INSERT INTO sos_azioni_utente
-VALUES (3, "Aderisco, Non aderisco");
+VALUES (3, "Adesione, Non adesione");
 
 INSERT INTO sos_azioni_utente
-VALUES (4, "Presa visione, Aderisco, Non aderisco");
+VALUES (4, "Presa visione, Adesione, Non adesione");
 
 CREATE TABLE IF NOT EXISTS sos_circolari (
 	id INT NOT NULL AUTO_INCREMENT,
