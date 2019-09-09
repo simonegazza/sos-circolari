@@ -5,6 +5,18 @@ CREATE TABLE IF NOT EXISTS sos_azioni_utente (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+INSERT INTO sos_azioni_utente
+VALUES (1, "Nessuna");
+
+INSERT INTO sos_azioni_utente
+VALUES (2, "Presa visione");
+
+INSERT INTO sos_azioni_utente
+VALUES (3, "Aderisco, Non aderisco");
+
+INSERT INTO sos_azioni_utente
+VALUES (4, "Presa visione, Aderisco, Non aderisco");
+
 CREATE TABLE IF NOT EXISTS sos_circolari (
 	id INT NOT NULL AUTO_INCREMENT,
 	numero INT UNIQUE,
