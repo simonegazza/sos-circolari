@@ -1,6 +1,6 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-class CircolariController extends JControllerLegacy {
+class SosCircolariController extends JControllerLegacy {
 	protected $default_view = 'circolari';
 }

@@ -1,6 +1,6 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
-echo __DIR__ . "/utilities.php";
+require __DIR__ . "/utilities.php";
 use \Joomla\Utilities\ArrayHelper;
 
 class SosCircolariModelCircolari extends JModelList {
@@ -35,7 +35,8 @@ class SosCircolariModelCircolari extends JModelList {
                 $config["bozza"] ? "NULL" : $this->getNumber()
             ) : "NULL";
         $this->publication_date = $config["data_pubblicazione"] ? (
-                $config["bozza"] ? "NULL" : str_replace("-","",date("Y-m-d"))
+//                $config["bozza"] ? "NULL" : str_replace("-","",date("Y-m-d"))
+                $config["bozza"] ? "NULL" : time()
             ) : "NULL";
         $this->academic_year = getAnnoScolastico();
         $this->userId = (int)(JFactory::getUser())->id;
@@ -241,8 +242,6 @@ function getCircolare($id) {
     $circolare["allegati"] = $attachments;
     return($circolare);
 }
-
-
 
 function readFrontendWidget() {
     $db = JFactory::getDbo();

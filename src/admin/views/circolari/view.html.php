@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-class circolariViewCircolari extends JViewLegacy {
+class SosCircolariViewCircolari extends JViewLegacy {
 	function display($tpl = null) {
 		// Get data from the model
 		$this->items = $this->get('Items');
