@@ -1,5 +1,6 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
+jimport( 'joomla.application.component.controller' );
 
 class SosCircolariViewCircolari extends JViewLegacy
 {
@@ -15,6 +16,16 @@ class SosCircolariViewCircolari extends JViewLegacy
             return false;
         }
 
+        $this->addToolBar();
+
         parent::display($tpl);
+    }
+
+    protected function addToolBar()
+    {
+        JToolBarHelper::title(JText::_('SOS Circolari'));
+        JToolBarHelper::addNew('circolari.add');
+        JToolBarHelper::title(JText::_("SOS Circolari"));
+        JToolBarHelper::addNew("newcircolare.add");
     }
 }
